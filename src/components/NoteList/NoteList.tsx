@@ -1,4 +1,3 @@
-import React from 'react';
 import css from './NoteList.module.css';
 import { Note } from '../../types/note';
 

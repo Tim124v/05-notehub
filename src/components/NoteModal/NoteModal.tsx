@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import css from './NoteModal.module.css';
 import NoteForm, { NoteFormValues } from '../NoteForm/NoteForm';
@@ -39,8 +39,10 @@ function NoteModal({ onClose }: NoteModalProps) {
       <div className={css.modal} onClick={e => e.stopPropagation()}>
         <NoteForm
           onCancel={onClose}
-          onSuccess={onClose}
-          onSubmit={handleSubmit}
+          onSubmit={async (values) => {
+            await handleSubmit(values);
+            onClose();
+          }}
         />
       </div>
     </div>,

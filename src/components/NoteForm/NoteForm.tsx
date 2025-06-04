@@ -1,8 +1,7 @@
-import React from 'react';
-import css from './NoteForm.module.css';
 import { Formik, Form, Field, ErrorMessage, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import { Note } from '../../types/note';
+import css from './NoteForm.module.css';
 
 export interface NoteFormValues {
   title: string;
@@ -12,7 +11,6 @@ export interface NoteFormValues {
 
 export interface NoteFormProps {
   onCancel: () => void;
-  onSuccess: () => void;
   onSubmit: (values: NoteFormValues, helpers: FormikHelpers<NoteFormValues>) => Promise<void>;
 }
 
@@ -28,7 +26,7 @@ const initialValues: NoteFormValues = {
   tag: 'Todo',
 };
 
-function NoteForm({ onCancel, onSuccess, onSubmit }: NoteFormProps) {
+function NoteForm({ onCancel, onSubmit }: Omit<NoteFormProps, 'onSuccess'>) {
   return (
     <Formik
       initialValues={initialValues}
