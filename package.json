@@ -15,7 +15,6 @@
     "@types/react-dom": "^18.2.0",
     "@vitejs/plugin-react": "^4.2.0",
     "prettier": "^3.2.5",
-    "prettier-plugin-css-modules": "^0.0.1",
     "typescript": "^5.0.0",
     "vite": "^5.0.0",
     "vite-plugin-css-modules": "^0.0.1"
