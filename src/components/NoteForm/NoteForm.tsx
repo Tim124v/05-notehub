@@ -7,6 +7,7 @@ export interface NoteFormValues {
   title: string;
   content: string;
   tag: Note['tag'];
+  isArchived: boolean;
 }
 
 export interface NoteFormProps {
@@ -18,12 +19,14 @@ const validationSchema = Yup.object().shape({
   title: Yup.string().min(3).max(50).required(),
   content: Yup.string().max(500),
   tag: Yup.mixed<Note['tag']>().oneOf(['Todo', 'Work', 'Personal', 'Meeting', 'Shopping']).required(),
+  isArchived: Yup.boolean().required(),
 });
 
 const initialValues: NoteFormValues = {
   title: '',
   content: '',
   tag: 'Todo',
+  isArchived: false,
 };
 
 function NoteForm({ onCancel, onSubmit }: Omit<NoteFormProps, 'onSuccess'>) {

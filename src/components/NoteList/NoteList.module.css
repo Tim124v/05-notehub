@@ -26,15 +26,14 @@
     color: #212529;
   }
   
-  .content {
+   .content {
     margin: 0;
     flex-grow: 1;
     font-size: 14px;
     color: #495057;
     margin-bottom: 12px;
     display: -webkit-box;
-    line-clamp: 3;
-    -webkit-line-clamp: 3;
+    /* -webkit-line-clamp: 3; */
     -webkit-box-orient: vertical;
     overflow: hidden;
   }

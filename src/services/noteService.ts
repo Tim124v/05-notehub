@@ -23,19 +23,27 @@ export interface FetchNotesResponse {
   
 }
 
-export const fetchNotes = async (params: FetchNotesParams): Promise<FetchNotesResponse> => {
-  const cleanParams = { ...params };
-  if (!cleanParams.search) delete cleanParams.search;
-  const response: AxiosResponse<FetchNotesResponse> = await axiosInstance.get('', { params: cleanParams });
+export type CreateNoteDto = {
+  title: string;
+  content: string;
+  tag: Note['tag'];
+};
+
+export const fetchNotes = async (search: string, page: number): Promise<FetchNotesResponse> => {
+  const params: FetchNotesParams = {
+    page,
+    search: search || undefined
+  };
+  const response: AxiosResponse<FetchNotesResponse> = await axiosInstance.get('', { params });
   return response.data;
 };
 
-export const createNote = async (note: Omit<Note, 'id' | 'createdAt' | 'updatedAt'>): Promise<Note> => {
+export const createNote = async (note: CreateNoteDto): Promise<Note> => {
   const response: AxiosResponse<Note> = await axiosInstance.post('', note);
   return response.data;
 };
 
-export const deleteNote = async (id: string): Promise<Note> => {
+export const deleteNote = async (id: number): Promise<Note> => {
   const response: AxiosResponse<Note> = await axiosInstance.delete(`/${id}`);
   return response.data;
 }; 
