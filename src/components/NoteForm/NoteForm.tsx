@@ -2,39 +2,66 @@ import { Formik, Form, Field, ErrorMessage, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
 import { Note } from '../../types/note';
 import css from './NoteForm.module.css';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { createNote, CreateNoteDto } from '../../services/noteService';
+import { useState } from 'react';
 
 export interface NoteFormValues {
   title: string;
   content: string;
   tag: Note['tag'];
-  isArchived: boolean;
 }
 
 export interface NoteFormProps {
   onCancel: () => void;
-  onSubmit: (values: NoteFormValues, helpers: FormikHelpers<NoteFormValues>) => Promise<void>;
 }
 
 const validationSchema = Yup.object().shape({
   title: Yup.string().min(3).max(50).required(),
   content: Yup.string().max(500),
   tag: Yup.mixed<Note['tag']>().oneOf(['Todo', 'Work', 'Personal', 'Meeting', 'Shopping']).required(),
-  isArchived: Yup.boolean().required(),
 });
 
 const initialValues: NoteFormValues = {
   title: '',
   content: '',
   tag: 'Todo',
-  isArchived: false,
 };
 
-function NoteForm({ onCancel, onSubmit }: Omit<NoteFormProps, 'onSuccess'>) {
+function NoteForm({ onCancel }: NoteFormProps) {
+  const queryClient = useQueryClient();
+  const [error, setError] = useState<string | null>(null);
+
+  const mutation = useMutation<Note, Error, CreateNoteDto>({
+    mutationFn: createNote,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['notes'] });
+      onCancel();
+    },
+    onError: (error) => {
+      setError(error.message || '');
+    }
+  });
+
+  const handleSubmit = async (
+    values: NoteFormValues,
+    helpers: FormikHelpers<NoteFormValues>
+  ) => {
+    try {
+      setError(null);
+      const fixedTag = (values.tag.charAt(0).toUpperCase() + values.tag.slice(1).toLowerCase()) as Note['tag'];
+      const { title, content } = values;
+      await mutation.mutateAsync({ title, content, tag: fixedTag });
+    } catch (err) {
+      helpers.setSubmitting(false);
+    }
+  };
+
   return (
     <Formik
       initialValues={initialValues}
       validationSchema={validationSchema}
-      onSubmit={onSubmit}
+      onSubmit={handleSubmit}
     >
       {({ isSubmitting, isValid }) => (
         <Form className={css.form}>
@@ -59,6 +86,7 @@ function NoteForm({ onCancel, onSubmit }: Omit<NoteFormProps, 'onSuccess'>) {
             </Field>
             <ErrorMessage name="tag" component="span" className={css.error} />
           </div>
+          {error && <div className={css.error}>{error}</div>}
           <div className={css.actions}>
             <button type="button" className={css.cancelButton} onClick={onCancel} disabled={isSubmitting}>
               Cancel

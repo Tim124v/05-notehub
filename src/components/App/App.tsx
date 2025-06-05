@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { QueryClient, QueryClientProvider, useQuery } from '@tanstack/react-query';
+import { QueryClient, QueryClientProvider, useQuery, keepPreviousData } from '@tanstack/react-query';
 import css from './App.module.css';
 import SearchBox from '../SearchBox/SearchBox';
 import Pagination from '../Pagination/Pagination';
@@ -24,9 +24,9 @@ function AppContent() {
   };
 
   const { data, isLoading, isError, error } = useQuery<FetchNotesResponse, Error>({
-    queryKey: ['notes', page, debouncedSearch],
+    queryKey: ['notes', debouncedSearch, page],
     queryFn: () => fetchNotes(debouncedSearch, page),
-    placeholderData: (prev) => prev,
+    placeholderData: keepPreviousData,
   });
 
   return (
