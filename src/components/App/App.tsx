@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { QueryClient, QueryClientProvider, useQuery, keepPreviousData } from '@tanstack/react-query';
+import { useQuery, keepPreviousData } from '@tanstack/react-query';
 import css from './App.module.css';
 import SearchBox from '../SearchBox/SearchBox';
 import Pagination from '../Pagination/Pagination';
@@ -10,9 +10,7 @@ import { useDebounce } from 'use-debounce';
 import Loader from '../Loader/Loader';
 import Error from '../Error/Error';
 
-const queryClient = new QueryClient();
-
-function AppContent() {
+function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState('');
@@ -51,14 +49,6 @@ function AppContent() {
       )}
       {isModalOpen && <NoteModal onClose={() => setIsModalOpen(false)} />}
     </div>
-  );
-}
-
-function App() {
-  return (
-    <QueryClientProvider client={queryClient}>
-      <AppContent />
-    </QueryClientProvider>
   );
 }
 
